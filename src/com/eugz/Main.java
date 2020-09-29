@@ -18,14 +18,17 @@ public class Main {
                 lines.add(LineItem.getLineItem(line.split(" ")));
             }
 
-//            For debug purposes ===
-            lines.forEach(lineItem -> {
-                if (lineItem instanceof DLineItem) {
-                    System.out.println("This is D line!");
-                    List<LineItem> subListCLines = new ArrayList<>();
-                }
-            });
-//            For debug purposes ===
+////            For debug purposes ===
+//            lines.forEach(lineItem -> {
+//                if (lineItem instanceof DLineItem) {
+//                    System.out.println("This is D line!");
+//                    List<LineItem> subListCLines = new ArrayList<>();
+//                }
+//            });
+////            For debug purposes ===
+
+//            FILTER ENTITY =================================
+            List<CLineItem> targetCLines = new ArrayList<>();
 
             for (int i = 0; i < lines.size(); i++) {
                 LineItem current = lines.get(i);
@@ -35,12 +38,20 @@ public class Main {
 
                     if (current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
 //                    Match all case
+                        targetCLines = cLineItemsBeforeCurrent;
 
                     } else if (current.isServiceMatchAll() && !current.isQuestionTypeIdMatchAll()) {
 //                    Certain serviceId case and certain questionTypeId case
+                        int questionTypeId = current.getQuestionTypeId();
+                        Integer categoryId = current.getCategoryId();
+                        Integer subcategoryId = current.getSubCategoryId();
+                        targetCLines = filterByQuestionType(cLineItemsBeforeCurrent, questionTypeId, categoryId, subcategoryId);
 
                     } else if (!current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
 //                    Match all serviceId case and certain questionTypeId case
+                        int serviceId = current.getServiceId();
+                        Integer variationId = current.getVariationId();
+                        targetCLines = filterByService(cLineItemsBeforeCurrent, serviceId, variationId);
 
                     } else {
 //                    Certain serviceId case and match all questionTypeId case
@@ -50,11 +61,12 @@ public class Main {
                         Integer categoryId = current.getCategoryId();
                         Integer subcategoryId = current.getSubCategoryId();
 
-
+                        targetCLines = getResultCLines(cLineItemsBeforeCurrent, serviceId, variationId, questionTypeId, categoryId, subcategoryId);
                     }
-
                 }
             }
+
+//            TODO: filter lines by date and period
 
         } catch (IOException e) {
             e.printStackTrace();

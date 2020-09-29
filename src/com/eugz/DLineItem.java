@@ -15,6 +15,7 @@ public class DLineItem extends LineItem {
 
     private String responseAnswer;
 
+    private boolean isSingleDate;
     private Calendar date;
     private Period period;
 
@@ -36,6 +37,7 @@ public class DLineItem extends LineItem {
         responseAnswer = data[2];
 
         if (!super.isPeriod(data)) {
+            isSingleDate = true;
             date = super.parseDate(data);
             period = null;
         } else {
@@ -82,6 +84,10 @@ public class DLineItem extends LineItem {
     @Override
     String getResponseAnswer() {
         return responseAnswer;
+    }
+
+    public boolean isSingleDate() {
+        return isSingleDate;
     }
 
     @Override
