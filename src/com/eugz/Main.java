@@ -20,72 +20,21 @@ public class Main {
             }
 
 //            FILTER ENTITY =================================
-            List<CLineItem> targetCLines = new ArrayList<>();
-
             for (int i = 0; i < lines.size(); i++) {
                 LineItem current = lines.get(i);
 
                 if (current instanceof DLineItem) {
-                    List<CLineItem> cLineItemsBeforeCurrent = getCLineItemBeforeIndex(lines, i);
+                    DLineItem currentDItem = (DLineItem) current;
+                    System.out.println(currentDItem);
+                    List<CLineItem> cLineItemsByServQuest = getCLinesByServiceAndQuestion(lines, currentDItem, i);
+                    List<CLineItem> cLineItemsByServQuestResp = getCLinesByResponseType(cLineItemsByServQuest, currentDItem.getResponseAnswer());
+                    List<CLineItem> cLineItemsByServQuestRespDate = getCLinesByTime(cLineItemsByServQuestResp, currentDItem);
 
-                    if (current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
-//                    Match all case
-                        targetCLines = cLineItemsBeforeCurrent;
-
-                    } else if (current.isServiceMatchAll() && !current.isQuestionTypeIdMatchAll()) {
-//                    Certain serviceId case and certain questionTypeId case
-                        int questionTypeId = current.getQuestionTypeId();
-                        Integer categoryId = current.getCategoryId();
-                        Integer subcategoryId = current.getSubCategoryId();
-                        targetCLines = filterByQuestionType(cLineItemsBeforeCurrent, questionTypeId, categoryId, subcategoryId);
-
-                    } else if (!current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
-//                    Match all serviceId case and certain questionTypeId case
-                        int serviceId = current.getServiceId();
-                        Integer variationId = current.getVariationId();
-                        targetCLines = filterByService(cLineItemsBeforeCurrent, serviceId, variationId);
-
-                    } else {
-//                    Certain serviceId case and match all questionTypeId case
-                        int serviceId = current.getServiceId();
-                        Integer variationId = current.getVariationId();
-                        int questionTypeId = current.getQuestionTypeId();
-                        Integer categoryId = current.getCategoryId();
-                        Integer subcategoryId = current.getSubCategoryId();
-
-                        targetCLines = getResultCLines(cLineItemsBeforeCurrent, serviceId, variationId, questionTypeId, categoryId, subcategoryId);
+//                    FOR DEBUG PURPOSES ======================================
+                    for (CLineItem item : cLineItemsByServQuestRespDate) {
+                        System.out.println(item);
                     }
-
-                    targetCLines.forEach(lineItem -> {
-                        System.out.println("TARGET C-LINES");
-                        if (lineItem instanceof CLineItem) {
-                            System.out.println("C-line item!");
-                            System.out.println(lineItem.getServiceId());
-                        } else {
-                            System.out.println("D-line item!");
-                        }
-                    });
-
-//                    Filtering CLines by date and period
-
-                    List<CLineItem> linesFilteredByAll = new ArrayList<>();
-                    if (((DLineItem) current).isSingleDate()) {
-                        linesFilteredByAll = getCLinesByDate(targetCLines, current.getDate());
-                    } else {
-                        linesFilteredByAll = getCLinesByPeriod(targetCLines, current.getStartDate(), current.getEndDate());
-                    }
-
-////            For debug purposes ===
-//                    linesFilteredByAll.forEach(lineItem -> {
-//                        System.out.println("FILTERED BY ALL");
-//                        if (lineItem instanceof CLineItem) {
-//                            System.out.println("C-line item!");
-//                            System.out.println(lineItem.getServiceId());
-//                        } else {
-//                            System.out.println("D-line item!");
-//                        }
-//                    });
-////            For debug purposes ===
+//                    FOR DEBUG PURPOSES ======================================
                 }
             }
         } catch (IOException e) {
@@ -109,6 +58,37 @@ public class Main {
         return items;
     }
 
+    public static List<CLineItem> getCLinesByServiceAndQuestion(List<LineItem> allLines, DLineItem current, int currIndex) {
+        List<CLineItem> cLineItemsBeforeCurrent = getCLineItemBeforeIndex(allLines, currIndex);
+
+        if (current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
+//                    Match all case
+            return cLineItemsBeforeCurrent;
+        } else if (current.isServiceMatchAll() && !current.isQuestionTypeIdMatchAll()) {
+//                    Certain serviceId case and certain questionTypeId case
+            int questionTypeId = current.getQuestionTypeId();
+            Integer categoryId = current.getCategoryId();
+            Integer subcategoryId = current.getSubCategoryId();
+
+            return filterByQuestionType(cLineItemsBeforeCurrent, questionTypeId, categoryId, subcategoryId);
+        } else if (!current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
+//                    Match all serviceId case and certain questionTypeId case
+            int serviceId = current.getServiceId();
+            Integer variationId = current.getVariationId();
+
+            return filterByService(cLineItemsBeforeCurrent, serviceId, variationId);
+        } else {
+//                    Certain serviceId case and match all questionTypeId case
+            int serviceId = current.getServiceId();
+            Integer variationId = current.getVariationId();
+            int questionTypeId = current.getQuestionTypeId();
+            Integer categoryId = current.getCategoryId();
+            Integer subcategoryId = current.getSubCategoryId();
+
+            return getResultCLines(cLineItemsBeforeCurrent, serviceId, variationId, questionTypeId, categoryId, subcategoryId);
+        }
+    }
+
     public static List<CLineItem> getResultCLines(List<CLineItem> list, int serviceId, Integer variationId, int questionTypeId, Integer categoryId, Integer subcategoryId)  {
         List<CLineItem> filteredByService = filterByService(list, serviceId, variationId);
         List<CLineItem> filteredByAll = filterByQuestionType(filteredByService, questionTypeId, categoryId, subcategoryId);
@@ -129,7 +109,7 @@ public class Main {
             List<CLineItem> byServiceAndVariation = new ArrayList<>();
 
             for (CLineItem item : byServiceOnly) {
-                if (item.getVariationId() == variationId) {
+                if (item.getVariationId().equals(variationId)) {
                     byServiceAndVariation.add(item);
                 }
             }
@@ -153,7 +133,7 @@ public class Main {
             List<CLineItem> byQuestionTypeAndCategory = new ArrayList<>();
 
             for (CLineItem item : byQuestionTypeIdOnly) {
-                if (item.getCategoryId() == categoryId) {
+                if (item.getCategoryId().equals(categoryId)) {
                     byQuestionTypeAndCategory.add(item);
                 }
             }
@@ -162,7 +142,7 @@ public class Main {
                 List<CLineItem> byQuestionAndCategoryAndSubcategory = new ArrayList<>();
 
                 for (CLineItem item : byQuestionTypeAndCategory) {
-                    if (item.getSubCategoryId() == subcategoryId) {
+                    if (item.getSubCategoryId().equals(subcategoryId)) {
                         byQuestionAndCategoryAndSubcategory.add(item);
                     }
                 }
@@ -174,6 +154,28 @@ public class Main {
         }
 
         return byQuestionTypeIdOnly;
+    }
+
+    public static List<CLineItem> getCLinesByResponseType(List<CLineItem> list, String responseType) {
+        List<CLineItem> filteredByResponseType = new ArrayList<>();
+
+        for (CLineItem item : list) {
+            if (item.getResponseAnswer().equals(responseType)) {
+                filteredByResponseType.add(item);
+            }
+        }
+
+        return filteredByResponseType;
+    }
+
+    public static List<CLineItem> getCLinesByTime(List<CLineItem> list, DLineItem current) {
+
+        if (current.isSingleDate()) {
+            return getCLinesByDate(list, current.getDate());
+        } else {
+            return getCLinesByPeriod(list, current.getStartDate(), current.getEndDate());
+        }
+
     }
 
     public static List<CLineItem> getCLinesByDate(List<CLineItem> list, LocalDate date) {

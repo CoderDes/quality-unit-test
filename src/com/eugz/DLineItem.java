@@ -106,4 +106,22 @@ public class DLineItem extends LineItem {
     LocalDate getEndDate() {
         return endDate;
     }
+
+    @Override
+    public String toString() {
+        return "DLineItem{" +
+                "isServiceMatchAll=" + isServiceMatchAll +
+                ", serviceId=" + serviceId +
+                ", variationId=" + variationId +
+                ", isQuestionTypeIdMatchAll=" + isQuestionTypeIdMatchAll +
+                ", questionTypeId=" + questionTypeId +
+                ", categoryId=" + categoryId +
+                ", subCategoryId=" + subCategoryId +
+                ", responseAnswer='" + responseAnswer + '\'' +
+                ", isSingleDate=" + isSingleDate +
+                ", date=" + date +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }

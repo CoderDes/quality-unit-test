@@ -111,6 +111,25 @@ public class CLineItem extends LineItem {
         return endDate;
     }
 
+    @Override
+    public String toString() {
+        return "CLineItem{" +
+                "isServiceMatchAll=" + isServiceMatchAll +
+                ", serviceId=" + serviceId +
+                ", variationId=" + variationId +
+                ", isQuestionTypeIdMatchAll=" + isQuestionTypeIdMatchAll +
+                ", questionTypeId=" + questionTypeId +
+                ", categoryId=" + categoryId +
+                ", subCategoryId=" + subCategoryId +
+                ", responseAnswer='" + responseAnswer + '\'' +
+                ", isSingleDate=" + isSingleDate +
+                ", date=" + date +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", timeWaitingInMinutes=" + timeWaitingInMinutes +
+                '}';
+    }
+
     public double getTimeWaitingInMinutes() {
         return timeWaitingInMinutes;
     }
