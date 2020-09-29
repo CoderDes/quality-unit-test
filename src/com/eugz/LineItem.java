@@ -76,16 +76,18 @@ public abstract class LineItem {
         return new GregorianCalendar(Integer.parseInt(rawDate[2]), Integer.parseInt(rawDate[1]), Integer.parseInt(rawDate[0]));
     }
 
-    public static Period parsePeriod(String[] data) {
+    public static LocalDate parseStartDate(String[] data) {
         String[] datesElems = data[3].split("-");
         String[] startDateElems = datesElems[0].split("\\.");
-        String[] endDateElems = datesElems[1].split("\\.");
-
-        LocalDate startDate = LocalDate.of(Integer.parseInt(startDateElems[2]), Integer.parseInt(startDateElems[1]), Integer.parseInt(startDateElems[0]));
-        LocalDate endDate = LocalDate.of(Integer.parseInt(endDateElems[2]), Integer.parseInt(endDateElems[1]), Integer.parseInt(endDateElems[0]));
-
-        return Period.between(startDate, endDate);
+        return LocalDate.of(Integer.parseInt(startDateElems[2]), Integer.parseInt(startDateElems[1]), Integer.parseInt(startDateElems[0]));
     }
+
+    public static LocalDate parseEndDate(String[] data) {
+        String[] datesElems = data[3].split("-");
+        String[] endDateElems = datesElems[1].split("\\.");
+        return LocalDate.of(Integer.parseInt(endDateElems[2]), Integer.parseInt(endDateElems[1]), Integer.parseInt(endDateElems[0]));
+    }
+
 
     public static boolean waitingTimeExists(String[] data) {
         return data.length == 5;
@@ -113,5 +115,7 @@ public abstract class LineItem {
 
     abstract Calendar getDate();
 
-    abstract Period getPeriod();
+    abstract LocalDate getStartDate();
+
+    abstract LocalDate getEndDate();
 }

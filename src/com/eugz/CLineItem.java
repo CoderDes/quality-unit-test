@@ -1,5 +1,6 @@
 package com.eugz;
 
+import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
 
@@ -17,7 +18,8 @@ public class CLineItem extends LineItem {
 
     private boolean isSingleDate;
     private Calendar date;
-    private Period period;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private Double timeWaitingInMinutes;
 
@@ -41,10 +43,12 @@ public class CLineItem extends LineItem {
         if (!super.isPeriod(data)) {
             isSingleDate = true;
             date = super.parseDate(data);
-            period = null;
+            startDate = null;
+            endDate = null;
         } else {
             date = null;
-            period = super.parsePeriod(data);
+            startDate = super.parseStartDate(data);
+            endDate = super.parseEndDate(data);
         }
 
         timeWaitingInMinutes = super.waitingTimeExists(data) ? super.parseWaitingTime(data) : null;
@@ -100,8 +104,13 @@ public class CLineItem extends LineItem {
     }
 
     @Override
-    Period getPeriod() {
-        return period;
+    LocalDate getStartDate() {
+        return startDate;
+    }
+
+    @Override
+    LocalDate getEndDate() {
+        return endDate;
     }
 
     public double getTimeWaitingInMinutes() {

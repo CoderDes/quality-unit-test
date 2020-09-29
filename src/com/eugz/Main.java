@@ -2,6 +2,8 @@ package com.eugz;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.time.Period;
 import java.util.List;
 
 public class Main {
@@ -63,11 +65,17 @@ public class Main {
 
                         targetCLines = getResultCLines(cLineItemsBeforeCurrent, serviceId, variationId, questionTypeId, categoryId, subcategoryId);
                     }
+
+//                    Filtering CLines by date and period
+
+                    List<CLineItem> linesFilteredByAll = new ArrayList<>();
+                    if (((DLineItem) current).isSingleDate()) {
+                        linesFilteredByAll = getCLinesByDate(targetCLines, current.getDate());
+                    } else {
+                        linesFilteredByAll = getCLinesByPeriod(targetCLines, current.getPeriod());
+                    }
                 }
             }
-
-//            TODO: filter lines by date and period
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -154,5 +162,29 @@ public class Main {
         }
 
         return byQuestionTypeIdOnly;
+    }
+
+    public static List<CLineItem> getCLinesByDate(List<CLineItem> list, Calendar date) {
+        List<CLineItem> filteredByDate = new ArrayList<>();
+
+        for (CLineItem item : list) {
+            if (item.getDate().equals(date)) {
+                filteredByDate.add(item);
+            }
+        }
+
+        return filteredByDate;
+    }
+
+    public static List<CLineItem> getCLinesByPeriod(List<CLineItem> list, Period period) {
+        List<CLineItem> filteredByPeriod = new ArrayList<>();
+
+        for (CLineItem item : list) {
+            if (item.getDate().after(period.ge))
+        }
+    }
+
+    public static boolean isWithinRange(Calendar date, Period period) {
+
     }
 }
