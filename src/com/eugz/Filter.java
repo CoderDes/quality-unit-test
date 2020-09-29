@@ -40,23 +40,19 @@ public class Filter {
         List<CLineItem> cLineItemsBeforeCurrent = getCLineItemBeforeIndex(allLines, currIndex);
 
         if (current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
-//                    Match all case
             return cLineItemsBeforeCurrent;
         } else if (current.isServiceMatchAll() && !current.isQuestionTypeIdMatchAll()) {
-//                    Certain serviceId case and certain questionTypeId case
             int questionTypeId = current.getQuestionTypeId();
             Integer categoryId = current.getCategoryId();
             Integer subcategoryId = current.getSubCategoryId();
 
             return filterByQuestionType(cLineItemsBeforeCurrent, questionTypeId, categoryId, subcategoryId);
         } else if (!current.isServiceMatchAll() && current.isQuestionTypeIdMatchAll()) {
-//                    Match all serviceId case and certain questionTypeId case
             int serviceId = current.getServiceId();
             Integer variationId = current.getVariationId();
 
             return filterByService(cLineItemsBeforeCurrent, serviceId, variationId);
         } else {
-//                    Certain serviceId case and match all questionTypeId case
             int serviceId = current.getServiceId();
             Integer variationId = current.getVariationId();
             int questionTypeId = current.getQuestionTypeId();
