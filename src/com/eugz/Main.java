@@ -1,9 +1,8 @@
 package com.eugz;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.time.Period;
 import java.util.List;
 
 public class Main {
@@ -19,15 +18,6 @@ public class Main {
                 String line = reader.readLine();
                 lines.add(LineItem.getLineItem(line.split(" ")));
             }
-
-////            For debug purposes ===
-//            lines.forEach(lineItem -> {
-//                if (lineItem instanceof DLineItem) {
-//                    System.out.println("This is D line!");
-//                    List<LineItem> subListCLines = new ArrayList<>();
-//                }
-//            });
-////            For debug purposes ===
 
 //            FILTER ENTITY =================================
             List<CLineItem> targetCLines = new ArrayList<>();
@@ -66,14 +56,36 @@ public class Main {
                         targetCLines = getResultCLines(cLineItemsBeforeCurrent, serviceId, variationId, questionTypeId, categoryId, subcategoryId);
                     }
 
+                    targetCLines.forEach(lineItem -> {
+                        System.out.println("TARGET C-LINES");
+                        if (lineItem instanceof CLineItem) {
+                            System.out.println("C-line item!");
+                            System.out.println(lineItem.getServiceId());
+                        } else {
+                            System.out.println("D-line item!");
+                        }
+                    });
+
 //                    Filtering CLines by date and period
 
                     List<CLineItem> linesFilteredByAll = new ArrayList<>();
                     if (((DLineItem) current).isSingleDate()) {
                         linesFilteredByAll = getCLinesByDate(targetCLines, current.getDate());
                     } else {
-                        linesFilteredByAll = getCLinesByPeriod(targetCLines, current.getPeriod());
+                        linesFilteredByAll = getCLinesByPeriod(targetCLines, current.getStartDate(), current.getEndDate());
                     }
+
+////            For debug purposes ===
+//                    linesFilteredByAll.forEach(lineItem -> {
+//                        System.out.println("FILTERED BY ALL");
+//                        if (lineItem instanceof CLineItem) {
+//                            System.out.println("C-line item!");
+//                            System.out.println(lineItem.getServiceId());
+//                        } else {
+//                            System.out.println("D-line item!");
+//                        }
+//                    });
+////            For debug purposes ===
                 }
             }
         } catch (IOException e) {
@@ -88,7 +100,7 @@ public class Main {
         List<CLineItem> items = new ArrayList<>();
 
         for (int i = 0; i < dItemIndex; i++) {
-            LineItem item = items.get(i);
+            LineItem item = list.get(i);
             if (item instanceof CLineItem) {
                 items.add((CLineItem) item);
             }
@@ -164,11 +176,11 @@ public class Main {
         return byQuestionTypeIdOnly;
     }
 
-    public static List<CLineItem> getCLinesByDate(List<CLineItem> list, Calendar date) {
+    public static List<CLineItem> getCLinesByDate(List<CLineItem> list, LocalDate date) {
         List<CLineItem> filteredByDate = new ArrayList<>();
 
         for (CLineItem item : list) {
-            if (item.getDate().equals(date)) {
+            if (item.getDate().isEqual(date)) {
                 filteredByDate.add(item);
             }
         }
@@ -176,15 +188,16 @@ public class Main {
         return filteredByDate;
     }
 
-    public static List<CLineItem> getCLinesByPeriod(List<CLineItem> list, Period period) {
+    public static List<CLineItem> getCLinesByPeriod(List<CLineItem> list, LocalDate startDate, LocalDate endDate) {
         List<CLineItem> filteredByPeriod = new ArrayList<>();
 
         for (CLineItem item : list) {
-            if (item.getDate().after(period.ge))
+            LocalDate itemDate = item.getDate();
+            if (itemDate.isAfter(startDate) && itemDate.isBefore(endDate)) {
+                filteredByPeriod.add(item);
+            }
         }
-    }
 
-    public static boolean isWithinRange(Calendar date, Period period) {
-
+        return filteredByPeriod;
     }
 }

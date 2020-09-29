@@ -1,10 +1,7 @@
 package com.eugz;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public abstract class LineItem {
 
@@ -71,9 +68,9 @@ public abstract class LineItem {
         return data[3].contains("-");
     }
 
-    public static Calendar parseDate(String[] data) {
+    public static LocalDate parseDate(String[] data) {
         String[] rawDate = data[3].split("\\.");
-        return new GregorianCalendar(Integer.parseInt(rawDate[2]), Integer.parseInt(rawDate[1]), Integer.parseInt(rawDate[0]));
+        return LocalDate.of(Integer.parseInt(rawDate[2]), Integer.parseInt(rawDate[1]), Integer.parseInt(rawDate[0]));
     }
 
     public static LocalDate parseStartDate(String[] data) {
@@ -101,19 +98,19 @@ public abstract class LineItem {
 
     abstract int getServiceId();
 
-    abstract int getVariationId();
+    abstract Integer getVariationId();
 
     abstract boolean isQuestionTypeIdMatchAll();
 
     abstract int getQuestionTypeId();
 
-    abstract int getCategoryId();
+    abstract Integer getCategoryId();
 
-    abstract int getSubCategoryId();
+    abstract Integer getSubCategoryId();
 
     abstract String getResponseAnswer();
 
-    abstract Calendar getDate();
+    abstract LocalDate getDate();
 
     abstract LocalDate getStartDate();
 

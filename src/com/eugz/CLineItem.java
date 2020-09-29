@@ -1,8 +1,6 @@
 package com.eugz;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.Calendar;
 
 public class CLineItem extends LineItem {
     private boolean isServiceMatchAll;
@@ -17,7 +15,7 @@ public class CLineItem extends LineItem {
     private String responseAnswer;
 
     private boolean isSingleDate;
-    private Calendar date;
+    private LocalDate date;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -65,7 +63,7 @@ public class CLineItem extends LineItem {
     }
 
     @Override
-    int getVariationId() {
+    Integer getVariationId() {
         return variationId;
     }
 
@@ -80,12 +78,12 @@ public class CLineItem extends LineItem {
     }
 
     @Override
-    int getCategoryId() {
+    Integer getCategoryId() {
         return categoryId;
     }
 
     @Override
-    int getSubCategoryId() {
+    Integer getSubCategoryId() {
         return subCategoryId;
     }
 
@@ -99,7 +97,7 @@ public class CLineItem extends LineItem {
     }
 
     @Override
-    Calendar getDate() {
+    LocalDate getDate() {
         return date;
     }
 
