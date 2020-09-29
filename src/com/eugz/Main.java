@@ -25,16 +25,13 @@ public class Main {
 
                 if (current instanceof DLineItem) {
                     DLineItem currentDItem = (DLineItem) current;
-                    System.out.println(currentDItem);
+
                     List<CLineItem> cLineItemsByServQuest = getCLinesByServiceAndQuestion(lines, currentDItem, i);
                     List<CLineItem> cLineItemsByServQuestResp = getCLinesByResponseType(cLineItemsByServQuest, currentDItem.getResponseAnswer());
                     List<CLineItem> cLineItemsByServQuestRespDate = getCLinesByTime(cLineItemsByServQuestResp, currentDItem);
 
-//                    FOR DEBUG PURPOSES ======================================
-                    for (CLineItem item : cLineItemsByServQuestRespDate) {
-                        System.out.println(item);
-                    }
-//                    FOR DEBUG PURPOSES ======================================
+                    String result = processOutput(cLineItemsByServQuestRespDate);
+                    System.out.println(result);
                 }
             }
         } catch (IOException e) {
@@ -44,6 +41,25 @@ public class Main {
     }
 
 //    TODO: refactor to separate entity ===========================================================
+
+    public static String processOutput(List<CLineItem> list) {
+
+        if (list.size() > 1) {
+            Double sumWatingTimeInMinutes = 0d;
+
+            for (CLineItem item : list) {
+                sumWatingTimeInMinutes = Double.sum(sumWatingTimeInMinutes, item.getTimeWaitingInMinutes());
+            }
+
+            Double average = sumWatingTimeInMinutes / list.size();
+
+            return average.toString();
+        } else if (list.size() > 0){
+            return list.get(0).getTimeWaitingInMinutes().toString();
+        }
+
+        return "-";
+    }
 
     public static List<CLineItem> getCLineItemBeforeIndex(List<LineItem> list, int dItemIndex) {
         List<CLineItem> items = new ArrayList<>();

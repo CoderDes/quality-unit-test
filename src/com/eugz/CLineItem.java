@@ -130,7 +130,7 @@ public class CLineItem extends LineItem {
                 '}';
     }
 
-    public double getTimeWaitingInMinutes() {
+    public Double getTimeWaitingInMinutes() {
         return timeWaitingInMinutes;
     }
 }
